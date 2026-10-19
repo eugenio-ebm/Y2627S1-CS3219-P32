@@ -1426,3 +1426,29 @@ for context, frontend-service is being set up. The frontend’s supplier screen 
   deployment shell syntax, and whitespace checks passed. Disposable containers
   were removed. No schema migration or deployment.
 - Author review: Pending.
+
+## 2026-10-19: Send Mailjet welcome email after user registration
+
+- Tool: ChatGPT (GPT-6). Mode: Implementation, tests, documentation, and verification.
+- User instruction: Add a Mailjet interface to the user service using Nodemailer and
+  send a welcome email after account signup.
+- Key response:
+  - Added a Nodemailer SMTP sender using Mailjet credentials and a configurable
+    verified sender address.
+  - Connected the welcome email to public registration after the user-created
+    event is published. Delivery failures are logged without undoing registration.
+  - Added optional environment and Compose configuration, validation for partial
+    settings, setup documentation, and sender tests.
+  - Added AI-assistance disclosures to the implementation files.
+- Affected files: `.env.example`, `compose.yaml`, `user-service/README.md`,
+  `user-service/package.json`, `user-service/package-lock.json`,
+  `user-service/src/config.ts`, `user-service/src/controllers/auth.controller.ts`,
+  `user-service/src/services/auth.service.ts`,
+  `user-service/src/services/mailjet.service.ts`,
+  `user-service/src/services/mailjet.service.test.ts`, and this log.
+- Verification: All 11 user-service tests passed; targeted strict TypeScript
+  checking, Compose configuration validation, package JSON parsing, and
+  `git diff --check` passed. Later verified the running container had all three
+  Mailjet settings and its SMTP connection/authentication succeeded; no live email
+  delivery confirmation was available.
+- Author review: Pending.
