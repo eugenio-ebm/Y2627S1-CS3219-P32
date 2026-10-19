@@ -68,6 +68,13 @@ validation and uniqueness rules. Email updates require a matching `confirmEmail`
 updates require the current password, enforce the registration password rules, and reject a new
 password that matches the current password.
 
+To send a welcome email after public registration, set `MAILJET_API_KEY`, `MAILJET_SECRET_KEY`,
+and `MAILJET_FROM` in the user-service environment. The sender address must be verified in
+Mailjet. Mailjet uses its SMTP endpoint (`in-v3.mailjet.com:587`) through Nodemailer. Leave all
+three settings unset to disable welcome emails during local development; partial configuration
+prevents the service from starting. A delivery failure is logged and does not undo a successful
+registration.
+
 The service publishes to `PUBSUB_TOPIC` (default `user-events`) in
 `PUBSUB_PROJECT_ID` (default `foc-local`). Set `PUBSUB_EMULATOR_HOST` for local
 development. The worker exposes `POST /pubsub/user-events` for Pub/Sub push

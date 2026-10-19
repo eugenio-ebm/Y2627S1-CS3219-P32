@@ -1,5 +1,6 @@
 # AI Assistance Disclosure: ChatGPT (GPT-6), 2026-09-30.
-# Scope: User PostgreSQL wiring and optional bootstrap secret. Author review: Done.
+# Scope: User PostgreSQL wiring, optional bootstrap secret, and Mailjet welcome-email settings.
+# Author review: Done.
 services:
   credit-db:
     image: postgres:17
@@ -90,6 +91,9 @@ services:
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-900}
       BOOTSTRAP_SECRET: ${BOOTSTRAP_SECRET:-}
+      MAILJET_API_KEY: ${MAILJET_API_KEY:-}
+      MAILJET_SECRET_KEY: ${MAILJET_SECRET_KEY:-}
+      MAILJET_FROM: ${MAILJET_FROM:-}
       DATABASE_URL: postgres://user:user@user-db:5432/users
       PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
       PUBSUB_PROJECT_ID: foc-local

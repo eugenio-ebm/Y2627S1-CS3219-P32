@@ -3,6 +3,9 @@
     Tool: ChatGPT (model: GPT-6), date: 2026-09-29
     Scope: PostgreSQL auth and profile updates, plus protected first-admin bootstrap
     Author review: Done
+    Tool: ChatGPT (GPT-6), date: 2026-10-19
+    Scope: Sending welcome email after successful public registration
+    Author review: Pending
 **/
 import { createHash, timingSafeEqual } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
@@ -16,6 +19,7 @@ import {
   type User,
 } from "../db/schema";
 import { publishUserEvent, userSnapshot } from "../events/user-events";
+import { sendWelcomeEmail, type MailjetConfiguration } from "./mailjet.service";
 import {
   findPublicUserById,
   findUserById,
@@ -33,6 +37,7 @@ export interface AuthConfiguration {
   jwtSecret: string;
   accessTokenTtl: number;
   bootstrapSecret?: string;
+  mailjet?: MailjetConfiguration;
 }
 
 function toPublicUser(user: User) {
@@ -81,6 +86,11 @@ export async function register(input: unknown, config: AuthConfiguration) {
     passwordHash: hashPassword(password),
   };
   await publishUserEvent({ type: "user.created", user: userSnapshot(user) }, user.id);
+  try {
+    await sendWelcomeEmail(user, config.mailjet);
+  } catch (error) {
+    console.error(`Failed to send welcome email for user ${user.id}`, error);
+  }
 
   return {
     token: createAccessToken(user.id, config.jwtSecret, config.accessTokenTtl),
